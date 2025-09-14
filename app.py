@@ -3,13 +3,13 @@ from flask import Flask, request, jsonify, abort
 
 app = Flask(__name__)
 
-# Простое "хранилище" в памяти процесса
+
 ads = {}          # { id: {...} }
 next_id = 1       # счётчик id
 
 
 def serialize_ad(ad_id: int, ad: dict) -> dict:
-    """Возвращаем объявление в виде JSON-словаря с id."""
+
     return {
         "id": ad_id,
         "title": ad["title"],
@@ -26,16 +26,13 @@ def alive():
 
 @app.route("/ads", methods=["POST"])
 def create_ad():
-    """
-    Создать объявление.
-    Ожидаем JSON с полями: title, description, owner
-    """
+
     if not request.is_json:
         abort(400, description="Request body must be JSON")
 
     data = request.get_json(silent=True) or {}
 
-    # Простая валидация обязательных полей
+
     for field in ("title", "description", "owner"):
         if field not in data or not isinstance(data[field], str) or not data[field].strip():
             abort(400, description=f"Field '{field}' is required and must be a non-empty string")
@@ -73,7 +70,7 @@ def delete_ad(ad_id: int):
     return "", 204  # No Content
 
 
-# Красивые JSON-ошибки вместо HTML
+
 @app.errorhandler(400)
 def bad_request(err):
     return jsonify({"error": "bad_request", "message": err.description}), 400
